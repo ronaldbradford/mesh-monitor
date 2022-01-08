@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -o pipefail
+set -o nounset
+#set -o errexit
+
+readonly BASE_DIR="$(cd $(dirname "$0")/.. || exit;pwd)"
+readonly ETC="${BASE_DIR}/etc"
+readonly WWW="${BASE_DIR}/www"
+readonly PREV="${BASE_DIR}/www/prev"
+readonly BIN="${BASE_DIR}/bin"
+
+readonly SLEEP="${SLEEP:-15}"
+readonly INDEX_TEMPLATE="${ETC}/index.html.t"
+readonly INDEX="${WWW}/index.html"
+readonly NEXT_INDEX="${WWW}/index.html.next"
+readonly MM_ENV="${WWW}/.mm"
+readonly NEXT_MM_ENV="${WWW}/.mm.next"
+
+
+## Seed the index.html page with an incomplete template
+export MM_REFRESH_RATE=${REFRESH_RATE:-23}
+export MM_STARTED_EPOCH="$(date +%s)"
+export MM_STARTED="$(date)"
+export MM_NOW="${MM_STARTED}"
+envsubst < "${INDEX_TEMPLATE}" > "${INDEX}"
+
+mkdir -p "${PREV}"
+
+while :; do
+
+  # Run the monitor checks
+  # shellcheck source=bin/monitor
+  source "${BIN}/monitor"
+  
+  # Generate the output
+  export MM_NOW="$(date)"
+  export MM_NOW_EPOCH="$(date +%s)"
+  envsubst < "${INDEX_TEMPLATE}" > "${NEXT_INDEX}"
+  env | grep "^MM" > "${NEXT_MM_ENV}"
+  [ ! -f "${NEXT_INDEX}" ] && echo "ERROR: generation failed"
+  [ ! -s "${NEXT_INDEX}" ] && echo "ERROR: next index is size of 0"
+  cp "${INDEX}" "${PREV}"
+  mv "${NEXT_INDEX}" "${INDEX}"
+  mv "${NEXT_MM_ENV}" "${MM_ENV}"
+  sleep "${SLEEP}"
+done

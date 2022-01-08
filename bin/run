@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+readonly PRODUCT="mesh-monitor"
+readonly PORT="8052"
+
+readonly BASE_DIR="$(cd $(dirname "$0")/.. || exit;pwd)"
+
+readonly ETC="${BASE_DIR}/etc"
+readonly WWW="${BASE_DIR}/www"
+readonly BIN="${BASE_DIR}/bin"
+readonly GENERATE="${GENERATE:-${BIN}/generate}"
+
+cleanup() {
+  [ -n "${GENERATE_PID}" ] && echo "Cleaning up generate PID '${GENERATE_PID}'" && kill "${GENERATE_PID}"
+}
+
+trap cleanup EXIT
+
+# shellcheck source=etc/mesh-monitor.cnf
+[ -f "${ETC}/${PRODUCT}.cnf" ] && source "${ETC}/${PRODUCT}.cnf"
+
+${GENERATE} &
+GENERATE_PID=$!
+sleep 2
+
+cd "${WWW}" && python -m http.server "${PORT}"

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -o pipefail
+set -o nounset
+
+INFO_DT_FORMAT="+%H:%M:%S"
+
+info() {
+  [ -z "${TRACE:-}" ] && return
+
+  echo "$(date ${INFO_DT_FORMAT}) $*"
+}
+
+export MM_INSTANCE_STATE="good"
