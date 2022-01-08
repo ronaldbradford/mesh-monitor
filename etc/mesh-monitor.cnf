@@ -1,1 +1,9 @@
+##
+##
+readonly GIT_REPO="https://github.com/ronaldbradford/mesh-monitor.git"
+readonly DOCKER_IMAGE="mesh-monitor"
+readonly CONTAINER="monitor"
+
+## exported MM_ variables are logged for mesh
 export MM_VERSION="0.1"
+export MM_PORT="8052"

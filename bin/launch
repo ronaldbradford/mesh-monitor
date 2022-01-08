@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -o pipefail
+set -o nounset
+set -o errexit
+
+readonly COMMON="$(dirname "${BASH_SOURCE[0]}")/common"
+if [ ! -f "${COMMON}" ]; then
+  echo "ERROR: Required '${COMMON}' not found"
+  exit 1
+fi
+# shellcheck source=bin/common
+source "${COMMON}"
+
+command_exists git
+command_exists docker
+
+cd "${TMP_DIR}"
+DEPLOY_DIR="$(basename "${GIT_REPO}" | sed -e "s/.git$//")"
+rm -rf "${DEPLOY_DIR}"
+git clone -q "${GIT_REPO}"
+cd "${DEPLOY_DIR}"
+
+[ "$(docker ps | grep -c "${CONTAINER}")" -gt 0 ] && docker stop "${CONTAINER}" >/dev/null
+[ "$(docker ps -aa | grep -c "${CONTAINER}")" -gt 0 ] && docker rm "${CONTAINER}" >/dev/null
+
+docker build -t "${DOCKER_IMAGE}" .
+docker run --name "${CONTAINER}"  -d -p "${MM_PORT}:${MM_PORT}" "${DOCKER_IMAGE}"
+docker ps | grep "${CONTAINER}"
+docker logs "${CONTAINER}"

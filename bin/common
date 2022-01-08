@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -o pipefail
+set -o nounset
+set -o errexit
+
+### required command exists in PATH
+command_exists() {
+  [ $# -ne 1 ] && exit 1
+  local CMD="$1"
+  if ! type -p "${CMD}" >/dev/null 2>&1; then
+    echo "ERROR: '${CMD}' is required"
+    exit 1
+  fi
+}
+
+## required file check
+file_exists() {
+  [ $# -ne 1 ] && exit 1
+  local FILE="$1"
+  if [ ! -f "${FILE}" ]; then
+    echo "ERROR: Required '${FILE}' not found"
+    exit 1
+  fi
+}
+
+## required directory check
+dir_exists() {
+  [ $# -ne 1 ] && exit 1
+  local DIR="$1"
+  if [ ! -d "${DIR}" ]; then
+    echo "ERROR: Required directory '${DIR}' not found"
+    exit 1
+  fi
+}
+
+## Directories used
+readonly BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+readonly TMP_DIR="${TMP_DIR:-/tmp}"
+readonly ETC="${BASE_DIR}/etc"
+readonly BIN="${BASE_DIR}/bin"
+readonly WWW="${BASE_DIR}/www"
+
+dir_exists "${TMP_DIR}"
+dir_exists "${ETC}"
+dir_exists "${BIN}"
+dir_exists "${WWW}"
+
+## Required product variables
+readonly PRODUCT="mesh-monitor"
+readonly PRODUCT_CNF="${ETC}/${PRODUCT}.cnf"
+
+file_exists "${PRODUCT_CNF}"
+
+# shellcheck source=etc/mesh-monitor.cnf
+source "${PRODUCT_CNF}"

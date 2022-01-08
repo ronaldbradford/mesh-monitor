@@ -22,4 +22,5 @@ ${GENERATE} &
 GENERATE_PID=$!
 sleep 2
 
+readonly IP="$(curl -s http://icanhazip.com)"
 cd "${WWW}" && python -m http.server "${PORT}"
