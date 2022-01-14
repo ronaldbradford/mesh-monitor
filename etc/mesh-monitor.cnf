@@ -1,9 +1,17 @@
 ##
+## Configuration for standalone bin/launch
 ##
-readonly GIT_REPO="https://github.com/ronaldbradford/mesh-monitor.git"
+readonly GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
 readonly DOCKER_IMAGE="mesh-monitor"
 readonly CONTAINER="monitor"
 
+export PRODUCT_GIT_REPO GIT_REPO
+
 ## exported MM_ variables are logged for mesh
+
+## Core configuration
 export MM_VERSION="0.1"
 export MM_PORT="8052"
+
+## Customized configuration
+export MM_TITLE="Example"
