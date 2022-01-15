@@ -1,6 +1,13 @@
 footer { border-top: 1px solid #EFEFEF; margin-top: 20px; padding-top: 4px; }
 #logo { height: 60px; position: absolute; top: 5px; right: 5px;}
 
+.unknown { color: #9a10ef; }
 .good    { color: #109E2A; }
 .warning { color: #E88C23; }
 .error   { color: #FF100B; }
+
+#banner { color: #FFFFFF; font-size: 30pt; height: 40pt; margin: 0; padding: 0;  width: 100%;}
+.banner-unknown { background-color: #9a10ef; }
+.banner-good    { background-color: #109E2A; }
+.banner-warning { background-color: #E88C23; }
+.banner-error   { background-color: #FF100B; }

@@ -20,14 +20,16 @@
 
 </head>
 <body>
-<h1 class="${MM_INSTANCE_STATE}">${MM_TITLE} Monitor (${MM_INSTANCE_STATE})</h1>
+<h1 class="${MM_INSTANCE_STATE}">${MM_TITLE} Monitor</h1>
+<div id="banner" class="banner-${MM_INSTANCE_STATE}">${MM_INSTANCE_STATE}</div>
 ${MM_NOW}
 <img id="logo" src="/logo.png" alt="Mesh Monitor Logo" />
 
 <footer>
 <div>
 <a href="${GIT_REPO}">${PRODUCT}</a> v${MM_VERSION}
-Started: ${MM_STARTED} (${MM_STARTED_EPOCH})
+Generated every '${MM_SLEEP}s'.
+Started: ${MM_STARTED} (${MM_STARTED_EPOCH}). 
 </div>
 <div style="float:right">
 Created from <a href="${PRODUCT_GIT_REPO}">${PRODUCT}</a>
