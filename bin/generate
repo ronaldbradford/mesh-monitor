@@ -3,13 +3,15 @@ set -o pipefail
 set -o nounset
 #set -o errexit
 
-readonly BASE_DIR="$(cd $(dirname "$0")/.. || exit;pwd)"
-readonly ETC="${BASE_DIR}/etc"
-readonly WWW="${BASE_DIR}/www"
-readonly PREV="${BASE_DIR}/www/prev"
-readonly BIN="${BASE_DIR}/bin"
+COMMON="$(dirname "${BASH_SOURCE[0]}")/common"
+if [ ! -f "${COMMON}" ]; then
+  echo "ERROR: Required '${COMMON}' not found"
+  exit 1
+fi
+# shellcheck source=bin/common
+source "${COMMON}"
 
-readonly SLEEP="${SLEEP:-15}"
+readonly SLEEP="${MM_SLEEP:-15}"
 readonly INDEX_TEMPLATE="${ETC}/index.html.t"
 readonly INDEX="${WWW}/index.html"
 readonly NEXT_INDEX="${WWW}/index.html.next"
@@ -28,6 +30,7 @@ mkdir -p "${PREV}"
 
 while :; do
 
+  export MM_INSTANCE_STATE="unknown"
   # Run the monitor checks
   # shellcheck source=bin/monitor
   source "${BIN}/monitor"

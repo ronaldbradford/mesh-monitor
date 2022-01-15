@@ -36,11 +36,12 @@ dir_exists() {
 }
 
 ## Directories used
-readonly BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
-readonly TMP_DIR="${TMP_DIR:-/tmp}"
-readonly ETC="${BASE_DIR}/etc"
-readonly BIN="${BASE_DIR}/bin"
-readonly WWW="${BASE_DIR}/www"
+BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+TMP_DIR="${TMP_DIR:-/tmp}"
+ETC="${BASE_DIR}/etc"
+BIN="${BASE_DIR}/bin"
+WWW="${BASE_DIR}/www"
+PREV="${BASE_DIR}/www/prev"
 
 dir_exists "${TMP_DIR}"
 dir_exists "${ETC}"
@@ -49,9 +50,9 @@ dir_exists "${WWW}"
 
 ## Required product variables
 ## These are the orignal source names, so clone repos don't override
-readonly PRODUCT="mesh-monitor"
-readonly PRODUCT_GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
-readonly PRODUCT_CNF="${ETC}/${PRODUCT}.cnf"
+PRODUCT="mesh-monitor"
+PRODUCT_GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
+PRODUCT_CNF="${ETC}/${PRODUCT}.cnf"
 
 file_exists "${PRODUCT_CNF}"
 
