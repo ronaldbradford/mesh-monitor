@@ -26,4 +26,5 @@ cd "${DEPLOY_DIR}"
 docker build -t "${DOCKER_IMAGE}" .
 docker run --name "${CONTAINER}"  -d -p "${MM_PORT}:${MM_PORT}" "${DOCKER_IMAGE}"
 docker ps | grep "${CONTAINER}"
+sleep 5
 docker logs "${CONTAINER}"
