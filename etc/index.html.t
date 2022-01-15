@@ -25,8 +25,13 @@ ${MM_NOW}
 <img id="logo" src="/logo.png" alt="Mesh Monitor Logo" />
 
 <footer>
-<a href="${PRODUCT_GIT_REPO}">${PRODUCT}</a> v${MM_VERSION}
+<div>
+<a href="${GIT_REPO}">${PRODUCT}</a> v${MM_VERSION}
 Started: ${MM_STARTED} (${MM_STARTED_EPOCH})
+</div>
+<div style="float:right">
+Created from <a href="${PRODUCT_GIT_REPO}">${PRODUCT}</a>
+<div>
 </footer>
 </body>
 </html>
