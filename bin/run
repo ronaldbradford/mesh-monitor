@@ -1,26 +1,32 @@
 #!/usr/bin/env bash
-readonly PRODUCT="mesh-monitor"
-readonly PORT="8052"
+set -o pipefail
+set -o nounset
+set -o errexit
 
-readonly BASE_DIR="$(cd $(dirname "$0")/.. || exit;pwd)"
-
-readonly ETC="${BASE_DIR}/etc"
-readonly WWW="${BASE_DIR}/www"
-readonly BIN="${BASE_DIR}/bin"
-readonly GENERATE="${GENERATE:-${BIN}/generate}"
+readonly COMMON="$(dirname "${BASH_SOURCE[0]}")/common"
+if [ ! -f "${COMMON}" ]; then
+  echo "ERROR: Required '${COMMON}' not found"
+  exit 1
+fi
+# shellcheck source=bin/common
+source "${COMMON}"
 
 cleanup() {
   [ -n "${GENERATE_PID}" ] && echo "Cleaning up generate PID '${GENERATE_PID}'" && kill "${GENERATE_PID}"
 }
 
+# Incase you are already trying to run a local version in container
+[ "$(docker ps | grep -c "${CONTAINER}")" -gt 0 ] && docker stop "${CONTAINER}" >/dev/null
+[ "$(docker ps -aa | grep -c "${CONTAINER}")" -gt 0 ] && docker rm "${CONTAINER}" >/dev/null
+
 trap cleanup EXIT
 
-# shellcheck source=etc/mesh-monitor.cnf
-[ -f "${ETC}/${PRODUCT}.cnf" ] && source "${ETC}/${PRODUCT}.cnf"
-
+readonly GENERATE="${GENERATE:-${BIN}/generate}"
 ${GENERATE} &
 GENERATE_PID=$!
 sleep 2
 
-readonly IP="$(curl -s http://icanhazip.com)"
-cd "${WWW}" && python -m http.server "${PORT}"
+command_exists python
+
+export MM_IP="$(curl -s http://icanhazip.com)"
+cd "${WWW}" && python -m http.server "${MM_PORT}"
