@@ -12,6 +12,11 @@ bin/launch
 bin/run
 ```
 
+## To test just the monitors, will not produce a web container, just files
+```
+bin/generate
+```
+
 ### How it works
 
 `bin/run` will launch the generate process in the background, then launch the http server on  MM_PORT to serve content found in `www`.
@@ -20,7 +25,7 @@ and re-generate the content every SLEEP seconds.
 
 The `www/index.html` page will also refresh regularly.
 
-To run the validation at a different frequency
+To run the validation at a different frequency, you can
 
 ```
 SLEEP=2 bin/run
@@ -30,7 +35,7 @@ SLEEP=2 bin/run
 ## Configuration
 
 - etc/mesh-monitor.cnf
-- etc/
+- etc/monitors.tsv
 
 Environment variables that are prefixed with MM_ are special as that are usable by the mesh.
 
