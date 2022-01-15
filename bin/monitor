@@ -2,6 +2,22 @@
 set -o pipefail
 set -o nounset
 
+COMMON="$(dirname "${BASH_SOURCE[0]}")/common"
+if [ ! -f "${COMMON}" ]; then
+  echo "ERROR: Required '${COMMON}' not found"
+  exit 0 # We can't exit !0 as this is sourced
+fi
+# shellcheck source=bin/common
+source "${COMMON}"
+
+STAT="stat"
+[ "$(uname)" = "Darwin" ] && STAT="gstat" # OS/X hack
+
+command_exists ${STAT}
+
+# This script runs all defined monitors
+# Output state is "good" "warning" "error"
+
 INFO_DT_FORMAT="+%H:%M:%S"
 
 info() {
@@ -10,4 +26,45 @@ info() {
   echo "$(date ${INFO_DT_FORMAT}) $*"
 }
 
-export MM_INSTANCE_STATE="good"
+if [ -z "${MONITORS:-}" ]; then
+  info "MONITORS should be defined in '${PRODUCT_CNF}'"
+  export MM_INSTANCE_STATE="warning"
+  exit 0
+fi
+
+if [ ! -f "${ETC}/${MONITORS:-}" ]; then
+  info "MONITORS file '${ETC}/${MONITORS}' does not exist"
+  export MM_INSTANCE_STATE="warning"
+  exit 0
+fi
+
+MM_INSTANCE_STATE="good"
+TMP_FILE="${TMP_DIR}/${PRODUCT}.tmp.$$"
+EPOCH="$(date +%s)"
+RAW_RESULTS="${TMP_DIR}/${PRODUCT}.${EPOCH}.tmp.$$"
+touch ${RAW_RESULTS}
+while IFS=$'\t' read COMMAND URL; do
+
+  rm -f ${TMP_FILE}*
+
+  case "${COMMAND}" in
+    "curl")
+      info "${URL}"
+      curl --silent --location --insecure --output ${TMP_FILE}.html --dump-header ${TMP_FILE}.txt --connect-timeout 8  ${URL}
+      RC=$?
+      HTTP_STATUS=$(head -1 ${TMP_FILE}.txt | awk '{print $2}')
+      [ "${HTTP_STATUS}" != "200" ] && MM_INSTANCE_STATE="error"
+      HTTP_SIZE=$(${STAT} --printf="%s" ${TMP_FILE}.html)
+      [ "${HTTP_SIZE}" = "0" ] && MM_INSTANCE_STATE="warning"
+      echo "${EPOCH}:${HTTP_STATUS}:${RC}:${HTTP_SIZE}:${COMMAND}:${URL}" >> ${RAW_RESULTS}
+      info "${EPOCH}:${HTTP_STATUS}:${RC}:${HTTP_SIZE}:${COMMAND}:${URL}"
+      ;;
+  esac
+
+done < <(grep -v "^#" ${ETC}/${MONITORS})
+
+[ -f "${WWW}/state" ] && cp ${WWW}/state ${PREV}
+mv ${RAW_RESULTS} ${WWW}/state
+
+
+export MM_INSTANCE_STATE
