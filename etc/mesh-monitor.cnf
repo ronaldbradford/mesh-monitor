@@ -7,7 +7,10 @@ readonly GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
 readonly DOCKER_IMAGE="mesh-monitor"
 readonly CONTAINER="monitor"
 
-export PRODUCT_GIT_REPO GIT_REPO
+export GIT_REPO
+
+# https://api.slack.com/messaging/webhooks
+SLACK_WEBHOOK="https://hooks.slack.com/services/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"
 
 ## exported MM_ variables are logged for mesh usage
 

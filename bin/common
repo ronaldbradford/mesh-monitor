@@ -3,6 +3,8 @@ set -o pipefail
 set -o nounset
 set -o errexit
 
+[ -n "${TRACE:-}" ] && set -x
+
 ### required command exists in PATH
 command_exists() {
   [ $# -ne 1 ] && exit 1
