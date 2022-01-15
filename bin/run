@@ -30,3 +30,5 @@ command_exists python
 
 export MM_IP="$(curl -s http://icanhazip.com)"
 cd "${WWW}" && python -m http.server "${MM_PORT}"
+sleep 2
+open "http://127.0.0.1:${MM_{PORT}"
