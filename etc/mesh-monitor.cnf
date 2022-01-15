@@ -3,20 +3,24 @@
 ##
 
 # This is the clone git repo you want to use, defaults to project origin
-readonly GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
-readonly DOCKER_IMAGE="mesh-monitor"
-readonly CONTAINER="monitor"
+GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
+DOCKER_IMAGE="mesh-monitor"
+CONTAINER="monitor"
 
+# We have to export what we want to see published
 export GIT_REPO
 
-# https://api.slack.com/messaging/webhooks
+# See https://api.slack.com/messaging/webhooks to setup for your slack service
 SLACK_WEBHOOK="https://hooks.slack.com/services/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"
+
+MONITORS="monitors.tsv"
 
 ## exported MM_ variables are logged for mesh usage
 
 ## Core configuration
 export MM_VERSION="0.1"
 export MM_PORT="8052"
+export MM_SLEEP="15"
 
 ## Customized configuration
 export MM_TITLE="Example"
