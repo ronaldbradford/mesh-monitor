@@ -1,13 +1,15 @@
 ##
 ## Configuration for standalone bin/launch
 ##
+
+# This is the clone git repo you want to use, defaults to project origin
 readonly GIT_REPO="https://github.com/ronaldbradford/mesh-monitor"
 readonly DOCKER_IMAGE="mesh-monitor"
 readonly CONTAINER="monitor"
 
 export PRODUCT_GIT_REPO GIT_REPO
 
-## exported MM_ variables are logged for mesh
+## exported MM_ variables are logged for mesh usage
 
 ## Core configuration
 export MM_VERSION="0.1"
